@@ -121,7 +121,7 @@ public class PrimaryController {
                 alert.setContentText("Các ô không được để trống");
                 alert.showAndWait();
             }else{
-                if("user".equals(username.getText()) || "1234".equals(password.getText())){
+                if("user".equals(username.getText()) && "1".equals(password.getText())){
                     // IF CORRECT USERNAME AND PASSWORD THEN PROCEED TO DASHBOARD 
                     
                     alert = new Alert(Alert.AlertType.INFORMATION);
