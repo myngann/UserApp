@@ -1,7 +1,12 @@
 
 package com.mycompany.userapp;
 
+import connection.database;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -101,16 +106,23 @@ public class PrimaryController {
     private double x = 0;
     private double y = 0;
     
+    private Connection connect;
+    private PreparedStatement prepare;
+    private Statement statement;
+    private ResultSet result;
+    
+
+    
     public void login(ActionEvent ev){
-        //String sql = "SELECT * FROM admin WHERE username = ? and password = ?";
-        //connect = database.connectDb();
+        String sql = "SELECT * FROM TAIKHOAN WHERE username = ? and password = ?";
+        connect = database.getConn();
         
         try{
-            //prepare = connect.prepareStatement(sql);
-            //prepare.setString(1, username.getText());
-            //prepare.setString(2, password.getText());
+            prepare = connect.prepareStatement(sql);
+            prepare.setString(1, username.getText());
+            prepare.setString(2, password.getText());
             
-            //result = prepare.executeQuery();
+            result = prepare.executeQuery();
             
             Alert alert;
             
@@ -121,7 +133,7 @@ public class PrimaryController {
                 alert.setContentText("Các ô không được để trống");
                 alert.showAndWait();
             }else{
-                if("user".equals(username.getText()) && "1".equals(password.getText())){
+                if(result.next()){
                     // IF CORRECT USERNAME AND PASSWORD THEN PROCEED TO DASHBOARD 
                     
                     alert = new Alert(Alert.AlertType.INFORMATION);
@@ -130,6 +142,8 @@ public class PrimaryController {
                     alert.setContentText("Đăng nhập thành công!");
                     alert.showAndWait();
                     
+                    LoginData.taikhoan = username.getText();
+                    LoginData.matkhau = password.getText();
                     //getData.username = username.getText();
                     
                     // TO HIDE LOGIN FORM
@@ -138,6 +152,7 @@ public class PrimaryController {
                     // LINK YOUR DASHBOARD FORM
                     Parent root = FXMLLoader.load(getClass().getResource("secondary.fxml"));
                     Stage stage = new Stage();
+                    stage.setTitle("BCODE APP");
                     Scene scene = new Scene(root);
                     
                     root.setOnMousePressed((MouseEvent event) ->{
